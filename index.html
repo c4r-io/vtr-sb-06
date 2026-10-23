@@ -119,22 +119,41 @@
   .tracker .seg { height: 0.5rem; border-radius: 3px; background: var(--line); transition: background 0.4s ease; }
   .tracker .seg.on { background: var(--brand); }
 
-  /* ---- the manuscript ---- */
-  .ms {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 8px;
-    padding: 1.1rem 1.25rem; margin: 0 0 1.25rem;
+  /* ---- the shared manuscript (a Word-style doc with track changes) ---- */
+  .doc {
+    border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); margin: 0 0 1.25rem;
+    display: flex; flex-direction: column; overflow: hidden;
   }
-  .mslabel, .crumb {
-    display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em;
-    text-transform: uppercase; color: var(--muted);
+  .doc-bar {
+    display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    padding: 0.55rem 0.9rem; background: #f3f4f6; border-bottom: 1px solid var(--line); font-size: 0.8125rem;
   }
-  .mslabel { margin-bottom: 0.75rem; }
-  .ms section + section { margin-top: 1.1rem; }
-  .ms h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.35rem; }
-  .ms h5 { font-size: 0.875rem; font-weight: 600; font-style: italic; margin: 0.6rem 0 0.15rem; }
-  .ms p { font-size: 0.9375rem; line-height: 1.6; }
-  .ms p + p { margin-top: 0.4rem; }
-  .ms p.new { background: var(--good-bg); border-radius: 4px; padding: 0.15rem 0.35rem; margin-left: -0.35rem; margin-right: -0.35rem; }
+  .doc-bar svg { flex: none; }
+  .doc-bar .dname { font-weight: 700; }
+  .doc-bar .dmeta { color: var(--muted); margin-left: auto; }
+  .doc-legend {
+    display: flex; gap: 1rem; align-items: center; padding: 0.3rem 0.9rem; font-size: 0.75rem; color: var(--muted);
+    background: #fafafa; border-bottom: 1px solid var(--line);
+  }
+  .doc-legend .sub { margin-right: auto; font-style: italic; }
+  .doc-legend del, .doc-legend ins { font-size: 0.75rem; }
+  .doc-body { position: relative; padding: 1rem 1.25rem 1.1rem 1.6rem; overflow: auto; font-family: Georgia, "Times New Roman", serif; }
+  .doc-body section + section { margin-top: 1.1rem; }
+  .doc-body h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.35rem; font-family: inherit; }
+  .doc-body h5 { font-size: 0.875rem; font-weight: 700; font-style: italic; margin: 0.6rem 0 0.15rem; font-family: inherit; }
+  .doc-body p { font-size: 0.9375rem; line-height: 1.65; }
+  .doc-body p + p { margin-top: 0.4rem; }
+  .doc del { color: var(--bad); text-decoration: line-through; text-decoration-thickness: 1px; }
+  .doc ins { color: var(--brand); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+  .doc p.chg { border-left: 2px solid var(--brand); margin-left: -0.9rem; padding-left: 0.78rem; }
+  .doc p.focus { background: #fff8e1; outline: 2px dashed #e0a800; outline-offset: 3px; border-radius: 2px; position: relative; }
+  .doc p.focus.chg { margin-left: -0.9rem; }
+  .doc .etag {
+    display: inline-block; font-family: "Poppins", Arial, sans-serif; font-size: 0.6875rem; font-weight: 700;
+    letter-spacing: 0.05em; text-transform: uppercase; color: #7a5a00; background: #ffe9a8;
+    border-radius: 3px; padding: 0 0.35rem; margin-right: 0.4rem; vertical-align: 2px;
+  }
   .missing { font-style: italic; color: var(--muted); }
 
   /* ---- page 2 checklist ---- */
@@ -151,13 +170,6 @@
   .check .cfb { font-size: 0.875rem; margin: 0.4rem 0 0 1.7rem; }
   .check.ok .cfb { color: var(--good-ink); }
   .check.no .cfb { color: var(--bad-ink); }
-  .act {
-    font-family: inherit; font-size: 0.9375rem; font-weight: 600; margin-top: 1rem;
-    background: #000000; color: #ffffff; border: 1px solid #000000; border-radius: 6px;
-    padding: 0.5rem 1.1rem; cursor: pointer;
-  }
-  .act:hover:not(:disabled) { background: var(--brand); border-color: var(--brand); }
-  .act:disabled { background: #a3a3a3; border-color: #a3a3a3; cursor: not-allowed; }
 
   .fb { border-radius: 8px; padding: 0.75rem 1rem; margin-top: 0.75rem; font-size: 0.9375rem; }
   .fb.good { background: var(--good-bg); border-left: 3px solid var(--good); color: var(--good-ink); }
@@ -166,7 +178,12 @@
   .fb.level { background: var(--brand-tint); border-left: 3px solid var(--brand); color: var(--ink); }
   .fb strong { font-weight: 700; }
 
-  /* ---- revision edits ---- */
+  /* ---- rounds: options on the left, the shared manuscript on the right ---- */
+  .wrap { transition: max-width 0.2s ease; }
+  .wrap.wide { max-width: 72rem; }
+  .split { display: grid; grid-template-columns: 3fr 2fr; gap: 1.5rem; align-items: start; }
+  .docwrap { position: sticky; top: 1rem; }
+  .docwrap .doc { margin: 0; max-height: calc(100vh - 2rem); }
   .stepline {
     display: flex; align-items: center; gap: 0.5rem;
     font-size: 0.875rem; font-weight: 600; color: var(--muted);
@@ -178,30 +195,24 @@
   .stepline .dot.now { background: var(--brand); }
   .edit { display: none; }
   .edit.current { display: block; }
-  .passage {
-    border: 1px dashed #b9bec7; border-radius: 8px; background: var(--surface-2);
-    padding: 0.75rem 1rem; margin: 0.4rem 0 1.25rem;
-  }
-  .passage .ptag { display: block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.3rem; }
-  .passage p { font-size: 0.9375rem; line-height: 1.6; }
-  .passage.done { border: 1px solid var(--good); background: var(--good-bg); }
-  .passage.done .ptag { color: var(--good-ink); }
+  .edit .crumb { margin-bottom: 0.3rem; }
   .opts { display: flex; flex-direction: column; gap: 0.6rem; }
   .opt {
-    font-family: inherit; font-size: 0.9375rem; line-height: 1.55; text-align: left;
+    display: block; font-size: 0.9375rem; line-height: 1.55;
     background: var(--surface); color: var(--ink);
     border: 1px solid var(--line); border-radius: 8px;
-    padding: 0.7rem 1rem; cursor: pointer; display: grid; grid-template-columns: 1.5rem 1fr; gap: 0.5rem;
+    padding: 0.7rem 1rem; cursor: pointer;
   }
-  .opt .ol { font-weight: 700; color: var(--brand); }
-  .opt:hover:not(:disabled) { border-color: var(--brand); }
-  .opt:disabled { cursor: default; opacity: 0.55; }
-  .opt.picked-good { background: var(--good-bg); border-color: var(--good); opacity: 1; }
-  .opt.picked-good .ol { color: var(--good-ink); }
-  .opt.picked-bad { background: var(--bad-bg); border-color: var(--bad); opacity: 1; }
-  .opt.picked-bad .ol { color: var(--bad-ink); }
+  .opt .orow { display: grid; grid-template-columns: 1.3rem 1fr; gap: 0.55rem; align-items: start; }
+  .opt input { width: 1.05rem; height: 1.05rem; margin: 0.2rem 0 0; accent-color: var(--brand); }
+  .opt:hover { border-color: var(--brand); }
+  .opt.sel { border-color: var(--brand); background: var(--brand-tint); }
+  .opt .why { display: none; margin: 0.65rem 0 0 1.85rem; font-size: 0.875rem; line-height: 1.55; }
+  .opt.sel .why { display: block; }
+  .why p + p { margin-top: 0.35rem; }
+  .why strong { font-weight: 700; }
 
-  /* ---- page 5 comparison ---- */
+  /* ---- page 5: your choices vs C4R choices ---- */
   .lede { margin-bottom: 1.25rem; }
   .cmp { display: flex; flex-direction: column; gap: 1.25rem; margin-bottom: 1.5rem; }
   .cmp-sec h4 { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
@@ -209,8 +220,17 @@
   .cmp-row + .cmp-row { margin-top: 0.75rem; }
   .cmp-cell { border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.85rem; font-size: 0.875rem; line-height: 1.55; }
   .cmp-cell .crumb { margin-bottom: 0.25rem; }
-  .cmp-cell.start { background: var(--surface-2); }
-  .cmp-cell.end { background: var(--good-bg); border-color: var(--good); }
+  .cmp-cell .tag {
+    display: block; width: max-content; max-width: 100%; font-size: 0.75rem; font-weight: 700; border-radius: 999px;
+    padding: 0.05rem 0.6rem; margin-bottom: 0.4rem;
+  }
+  .cmp-cell.you { background: var(--surface-2); }
+  .cmp-cell.you .tag { background: #e5e7eb; color: var(--ink); }
+  .cmp-cell.you.match { background: var(--good-bg); border-color: var(--good); }
+  .cmp-cell.you.match .tag { background: var(--good); color: #ffffff; }
+  .cmp-cell.c4r { background: var(--brand-tint); border-color: var(--brand); }
+  .cmp-cell.c4r .tag { background: var(--brand); color: #ffffff; }
+  .cmp-cell .why { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(0, 0, 0, 0.1); font-size: 0.8125rem; }
   .cmp-head { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; position: sticky; top: 0; background: var(--bg); padding: 0.4rem 0; z-index: 1; }
   .cmp-head span { font-size: 0.875rem; font-weight: 700; }
   .cmp-head .hl { color: var(--brand); }
@@ -230,12 +250,17 @@
   }
   .congrats-actions button:hover { border-color: var(--brand); color: var(--brand); }
 
-  .opt:focus-visible, .pager button:focus-visible, .act:focus-visible,
+  .opt:focus-within, .pager button:focus-visible,
   .congrats-actions button:focus-visible, .drawer summary:focus-visible, .check input:focus-visible {
     outline: 3px solid var(--brand); outline-offset: 2px;
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+  @media (max-width: 60rem) {
+    .split { grid-template-columns: 1fr; }
+    .docwrap { order: -1; top: 0; z-index: 2; }
+    .docwrap .doc { max-height: 40vh; }
   }
   @media (max-width: 34rem) {
     .cmp-row, .cmp-head { grid-template-columns: 1fr; }
@@ -264,7 +289,7 @@
         <li>Read the incomplete draft and identify what a reader would need.</li>
         <li>Make the Methods and Results complete.</li>
         <li>Add how the bias was mitigated, and discuss it.</li>
-        <li>Compare where you started with where you finished.</li>
+        <li>Compare your choices with C4R’s choices.</li>
       </ol>
     </div>
   </section>
@@ -286,7 +311,7 @@
     </details>
 
     <div class="tracker" data-tracker></div>
-    <div class="ms" id="draftMs"></div>
+    <div data-doc="draft"></div>
 
     <p class="prompt" id="p2q">This draft would not let a reader judge selection bias. What is missing? Select all that apply.</p>
     <div class="checks" id="checks"></div>
@@ -298,7 +323,7 @@
     <h2>Round 1: Make the report complete</h2>
     <div class="instructions">
       <span class="ilabel">Instructions</span>
-      <p>Revise three passages in the Methods and Results. For each one, choose the revision that gives a reader what they need to assess selection bias. A correct choice is written into your manuscript.</p>
+      <p>Revise three passages in the Methods and Results. Every option improves the draft. Select one to see what it does well and what it trades away, then keep the revision you would write. Your choice is written into the shared manuscript with track changes, and you can switch until you move on.</p>
     </div>
     <details class="drawer">
       <summary>Details on the study</summary>
@@ -308,12 +333,11 @@
       <summary>The three reporting levels</summary>
       <div class="drawer-body" data-frag="levels"></div>
     </details>
-    <details class="drawer">
-      <summary>Your manuscript so far</summary>
-      <div class="drawer-body" data-frag="ms"></div>
-    </details>
     <div class="tracker" data-tracker></div>
-    <div class="round" data-round="0"></div>
+    <div class="split">
+      <div class="round" data-round="0"></div>
+      <div class="docwrap"><div data-doc="round0"></div></div>
+    </div>
   </section>
 
   <!-- ============ PAGE 3: ROUND 2 ============ -->
@@ -321,7 +345,7 @@
     <h2>Round 2: Show how bias was mitigated and discussed</h2>
     <div class="instructions">
       <span class="ilabel">Instructions</span>
-      <p>Your manuscript is now complete, and it shows that selection bias is likely present. Revise three more passages to report how the authors checked for and addressed bias, and to discuss it clearly.</p>
+      <p>Your manuscript is now complete, and it shows that selection bias is likely present. Revise three more passages to report how the authors checked for and addressed bias, and to discuss it. As before, every option is an improvement. Keep the one you would write.</p>
     </div>
     <details class="drawer">
       <summary>Details on the study</summary>
@@ -331,20 +355,19 @@
       <summary>The three reporting levels</summary>
       <div class="drawer-body" data-frag="levels"></div>
     </details>
-    <details class="drawer">
-      <summary>Your manuscript so far</summary>
-      <div class="drawer-body" data-frag="ms"></div>
-    </details>
     <div class="tracker" data-tracker></div>
-    <div class="round" data-round="1"></div>
+    <div class="split">
+      <div class="round" data-round="1"></div>
+      <div class="docwrap"><div data-doc="round1"></div></div>
+    </div>
   </section>
 
   <!-- ============ PAGE 4: COMPARE ============ -->
   <section class="page" id="page-4">
-    <h2>From incomplete to complete</h2>
-    <p class="lede">Here is the manuscript where you started and where you finished. Every revision you chose is drawn from the published paper (<a class="cite" href="https://www.nejm.org/doi/full/10.1056/NEJMoa2311330" target="_blank" rel="noopener">Hampshire et al., 2024</a>).</p>
+    <h2>Your choices and C4R’s</h2>
+    <p class="lede">Here are the revisions you chose, next to the ones C4R would choose. Every C4R choice is the text the authors published (<a class="cite" href="https://www.nejm.org/doi/full/10.1056/NEJMoa2311330" target="_blank" rel="noopener">Hampshire et al., 2024</a>). Where yours differs, a note says what the published version adds.</p>
     <div class="tracker" data-tracker></div>
-    <div class="cmp-head"><span>Where you started</span><span class="hl">Where you finished</span></div>
+    <div class="cmp-head"><span>Your choices</span><span class="hl">C4R choices</span></div>
     <div class="cmp" id="cmp"></div>
     <div class="fb info takeaway">
       <p><strong>Selection-bias reporting lives in three places.</strong></p>
@@ -388,13 +411,12 @@
 <script>
 (function () {
   "use strict";
-  var T = {"SH.title": "Reporting Selection Bias", "SH.back": "Back", "SH.next": "Next", "SH.ilabel": "Instructions", "SH.studySum": "Details on the study", "SH.studyBody": "<strong>Cognition and Memory after Covid-19 in a Large Community Sample</strong> (<a class=\"cite\" href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa2311330\" target=\"_blank\" rel=\"noopener\">Hampshire et al., 2024</a>, <em>New England Journal of Medicine</em>). The researchers asked whether adults who had Covid-19 show objectively measurable cognitive deficits, and how long any deficits last. Adults from REACT, a large community study in England, were invited to complete an online survey and eight cognitive tasks. Scores were compared across groups defined by illness duration, variant period, and hospitalization.", "SH.levelsSum": "The three reporting levels", "SH.lv1name": "Incomplete", "SH.lv1def": "A reader cannot assess selection bias. A study reported like this should not have been published.", "SH.lv2name": "Complete", "SH.lv2def": "The Methods and Results are complete, so a reader can assess selection bias, and it is likely present. But it was not prevented, mitigated, or discussed.", "SH.lv3name": "Complete, mitigated, and discussed", "SH.lv3def": "A reader can assess selection bias, can see how the researchers prevented or mitigated it, and can find it clearly discussed.", "SH.pmDef": "<strong>Prevented or mitigated</strong> means the researchers stopped selection bias from happening during the study design phase, or fixed or adjusted for it during the data analysis phase.", "SH.levelLabel": "Reporting level {n} of 3: {name}", "SH.msSum": "Your manuscript so far", "SH.msLabel": "Manuscript draft, adapted from Hampshire et al. (2024)", "SH.secMethods": "Methods", "SH.secResults": "Results", "SH.secDiscussion": "Discussion", "SH.subPop": "Study Population and Design", "SH.subCog": "Cognitive Assessment", "SH.subStats": "Statistical Analysis", "SH.subResp": "Responses to Questionnaire and Cognitive Test", "SH.subPrimary": "Primary Analyses", "SH.subLimits": "Limitations", "SH.notReported": "Nothing reported here.", "SH.editStep": "Edit {n} of 3", "SH.curDraft": "Current draft", "SH.revised": "Revised", "SH.tryAgain": "Try another revision.", "MS.fixCog": "Participants undertook eight computerized online tasks from the Cognitron battery in a fixed order on their personal devices. We used factor analysis to obtain a global cognitive score across the eight tasks.", "MS.fixPrimary": "Participants with unresolved persistent symptoms had larger deficits in global cognition than those in the no–Covid-19 group (−0.42 SD; 95% CI, −0.53 to −0.31).", "MS.fixDisc": "In this large community-based study, we found that Covid-19 was associated with longer-term objectively measurable cognitive deficits.", "P1.band": "Let’s rebuild a manuscript so that readers can judge its selection bias.", "P1.lead": "You’ll work from a real published study of memory and thinking after Covid-19. We’ve removed the parts that report on selection bias. Your job is to put them back.", "P1.goalH": "Your Goal", "P1.goal": "Your goal is to <strong>revise the manuscript until a reader can assess selection bias, see how it was prevented or mitigated, and find it clearly discussed</strong>. Along the way, notice where in a paper each piece of that reporting belongs.", "P1.stepsH": "What You’re About To Do", "P1.step1": "Read the incomplete draft and identify what a reader would need.", "P1.step2": "Make the Methods and Results complete.", "P1.step3": "Add how the bias was mitigated, and discuss it.", "P1.step4": "Compare where you started with where you finished.", "P2.h": "Read the incomplete draft", "P2.instr": "Below is an adapted draft of the manuscript with its selection-bias reporting removed. Read it, then identify what a reader would need in order to judge whether selection bias is present.", "P2.draftS1": "We recruited adults in England who had taken part in a national Covid-19 surveillance study to complete an online assessment of cognitive function.", "P2.draftS4": "We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions.", "P2.draftS2": "A total of 112,964 participants completed the cognitive assessment.", "P2.q": "This draft would not let a reader judge selection bias. What is missing? Select all that apply.", "P2.m1": "How participants were sampled, and who was invited", "P2.m1fb": "The draft says participants came from “a national surveillance study” but not how they were selected or how many were invited. Without that, there is no starting population to compare against.", "P2.m2": "Which cognitive tasks were in the assessment", "P2.m2fb": "Already reported: the draft names the eight Cognitron tasks. Which tasks were used is about measurement, not about who ended up in the sample.", "P2.m3": "How many people were invited, responded, and completed the assessment", "P2.m3fb": "The draft gives only the final 112,964. A reader cannot tell how many people were lost, or at which stage.", "P2.m4": "Which statistical software was used", "P2.m4fb": "Software matters for reproducibility, but it tells the reader nothing about who was or was not included.", "P2.m5": "How the people who took part compare with the people who were invited", "P2.m5fb": "Even with all the numbers, a reader needs to know whether the people who took part differ from those who did not. That comparison is what shows whether selection bias is likely present.", "P2.m6": "Which characteristics the scores were adjusted for", "P2.m6fb": "Already reported: the draft lists the adjustment characteristics. Adjustment deals with differences within the sample, not with who is in it.", "P2.good": "<strong>That’s it.</strong> A reader needs all three of these to assess selection bias. Right now the draft sits at Level 1: incomplete, cannot assess.", "P2.bad": "<strong>You’ve found all three.</strong> Uncheck the incorrect choices to continue.", "P3.h": "Round 1: Make the report complete", "P3.instr": "Revise three passages in the Methods and Results. For each one, choose the revision that gives a reader what they need to assess selection bias. A correct choice is written into your manuscript.", "P3.s1q": "Which revision tells the reader how participants were sampled and invited?", "P3.s1a": "We recruited adults in England who had previously taken part in a national Covid-19 surveillance study. Adults who were interested in further research volunteered to complete a follow-up survey and an online cognitive assessment between August and December 2022.", "P3.s1afb": "This says where people came from, but not how they were selected or how many were invited. “Volunteered” also describes a self-selected sample without giving the reader any way to size it.", "P3.s1b": "We drew our cohort from a randomly selected community sample of 3,099,386 adults (≥18 years of age) in England, of whom 2,494,309 (80.5%) consented to be recontacted. Between August 1 and December 30, 2022, we invited a subsample of 800,000 adults to complete a follow-up survey and cognitive assessment. The subsample comprised participants who reported persistent symptoms after a positive or suspected infection, participants with a positive PCR or antibody test, and participants randomly selected from the remaining study population.", "P3.s1bfb": "<strong>Correct.</strong> The reader now knows the sampling frame (a random community sample), how many people were invited, and which groups they came from. That is the starting population every later comparison depends on. Note that the design deliberately oversampled people who had Covid-19, so the invited group was never meant to mirror the general population.", "P3.s1c": "We drew our cohort from a national community study of more than 3 million adults in England. Because the cohort was so large, it was representative of the adult population, and we invited 800,000 of its members to complete a follow-up survey and cognitive assessment.", "P3.s1cfb": "This gives numbers, but it asserts representativeness instead of showing it, and size alone does not make a sample representative. It also leaves out how the 800,000 were chosen, which the reader needs to judge who could have been missed.", "P3.s2q": "Which revision lets the reader see where participants were lost?", "P3.s2a": "Among the 800,000 adults invited, 276,840 (34.6%) completed the questionnaire. Of these respondents, 141,583 (51.1%) started the cognitive battery (completed at least one task), and 112,964 (79.8%) completed all eight tasks.", "P3.s2afb": "<strong>Correct.</strong> Each stage now has a count and a percentage, so the reader can see that about 14% of invited adults finished the full assessment, and where the rest dropped out. Each of those losses is a point where selection bias can enter.", "P3.s2b": "A total of 112,964 participants completed all eight cognitive tasks, making this one of the largest studies of cognition after Covid-19 to date. Results were analyzed for all participants with complete data.", "P3.s2bfb": "A large final sample says nothing about who was lost along the way. Without the number invited and the number at each stage, the reader cannot tell that 112,964 is only about 14% of the 800,000 adults invited.", "P3.s2c": "A total of 112,964 participants completed all eight cognitive tasks. Participants who did not respond to the invitation, or who started but did not finish the assessment, were excluded from the analysis.", "P3.s2cfb": "This names the exclusions but not their size. The reader needs a count at each stage (invited, responded, started, completed) to judge how much selection could have happened.", "P3.s3q": "Which revision shows the reader whether the participants differ from those invited?", "P3.s3a": "Participant characteristics, including age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions, are summarized in Table 1 for all participants who completed the cognitive assessment.", "P3.s3afb": "Describing who took part is useful, but it shows only one side. To judge selection bias, the reader needs the people who took part compared with the people who were invited.", "P3.s3b": "Participants who completed the cognitive assessment were broadly similar to the base study population in age, sex, race and ethnic group, and level of deprivation, so the representativeness of the sample is not a concern for interpreting our findings.", "P3.s3bfb": "This contradicts what the comparison actually showed: some groups were over- or underrepresented. A blanket reassurance with no comparison gives the reader nothing to check.", "P3.s3c": "As compared with the 800,000 invited participants, those who participated in the cognitive assessment were slightly more likely to be women, more likely to be White, and slightly less likely to be from the youngest age groups or from areas with greater levels of multiple deprivation. Participants who reported poor memory or brain fog were slightly more likely to participate than those without these symptoms, across all study groups, including the no–Covid-19 group.", "P3.s3cfb": "<strong>Correct.</strong> This compares participants with everyone who was invited and states the direction of each difference. The reader can now see that selection bias is likely present, including one difference tied directly to the outcome: people with memory complaints were more likely to take part.", "P3.levelUp": "<strong>Level 2 reached.</strong> The Methods and Results are now complete, so a reader can assess selection bias and can see that it is likely present. But nothing in the manuscript addresses it or discusses it yet.", "P4.h": "Round 2: Show how bias was mitigated and discussed", "P4.instr": "Your manuscript is now complete, and it shows that selection bias is likely present. Revise three more passages to report how the authors checked for and addressed bias, and to discuss it clearly.", "P4.s4q": "Which revision reports how the authors checked for and addressed bias?", "P4.s4a": "Because our sample of more than 100,000 participants was very large, selection bias was unlikely to affect our estimates, and no additional analyses were needed. We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions.", "P4.s4afb": "A large sample makes estimates more precise, but it does not change who is missing. If participants differ from non-participants, a bigger sample gives a more precise estimate of a still-biased answer.", "P4.s4b": "To assess nonresponse bias, we compared the characteristics of participants who had accessed and completed the cognitive assessment with those who had not. We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions. We used propensity-score matching to further account for potential confounding.", "P4.s4bfb": "<strong>Correct.</strong> The nonresponse comparison is the selection-bias step: it checks whether the people who completed the assessment differ from those who did not. Read the propensity-score sentence closely, though. Matching balances the groups being compared (for example, people who had Covid-19 and people who did not) on measured characteristics, which addresses confounding. It cannot bring back people who never took part, so on its own it does not correct selection bias. Good reporting names each method and the problem it addresses.", "P4.s4c": "We used propensity-score matching to eliminate selection bias, matching participants with and without Covid-19 on demographic characteristics and preexisting conditions. We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions.", "P4.s4cfb": "Propensity-score matching compares people within the sample, matched on characteristics that were measured. That addresses confounding. It cannot account for people who never took part, so it cannot eliminate selection bias, and claiming it does overstates what the method can do.", "P4.s5q": "Which revision discusses how the sampling design shaped who was included?", "P4.s5a": "Our findings differ from those of some clinic-based studies of people with long Covid. Those studies may have recruited different patients, which could explain why their results did not match ours.", "P4.s5afb": "This points at selection in other researchers’ studies but says nothing about how this study’s own sampling shaped who was included. The reader needs to know which kinds of cases this design captured and which it missed.", "P4.s5b": "Participants in our study were recruited by means of community-based random sampling, which ensured that our sample was free of the selection biases that affect hospital- or clinic-based studies and that our findings apply to all persons who have had Covid-19.", "P4.s5bfb": "Random sampling at the start prevents some biases, but it does not make a sample bias-free. People still had to respond and complete the tasks, and people who died could never be included. This sentence claims more than the design can deliver.", "P4.s5c": "Participants in our study were recruited by means of community-based random sampling, which resulted in the inclusion of persons with more asymptomatic and milder cases than would occur in hospital- or clinic-based studies but which also excluded persons with the most severe cases (e.g., those who died).", "P4.s5cfb": "<strong>Correct.</strong> This is the published sentence. It explains what the sampling design prevented (the skew toward severe cases in clinic samples) and is honest about who it still could not reach. Discussing selection bias means naming both the gain and the gap.", "P4.s6q": "Which revision discusses selection bias as a limitation?", "P4.s6a": "Any study that requires active participant engagement has a degree of participant self-selection bias. With regard to our study, persons with the most severe impairment may not have been able or willing to undertake a cognitive assessment. In addition, certain groups, including women and White persons, were slightly overrepresented in our study sample as compared with the base population, whereas younger persons and those from areas with greater levels of multiple deprivation were underrepresented. However, the sample size in our study meant that all sectors of society were represented and contributed meaningful data to the findings.", "P4.s6afb": "<strong>Correct.</strong> This is the published limitation. It names the bias, says who is likely missing (people with the most severe impairment, who could have shown the largest deficits), and links back to the comparison you added to the Results. Read the last sentence critically, though. A large sample means every group contributed enough data to analyze, but it does not remove selection bias. If the people who took part differ from those who did not, more participants give a more precise estimate of a still-biased result.", "P4.s6b": "This study has certain limitations, including the possibility of selection bias. Future studies should consider these limitations when interpreting results from community-based samples like ours.", "P4.s6bfb": "Naming selection bias is a start, but this does not say who is missing, how the sample differs from the base population, or how that might affect the findings. A reader cannot do anything with it.", "P4.s6c": "Certain groups, including women and White persons, were slightly overrepresented in our study sample, whereas younger persons and those from areas with greater deprivation were underrepresented. Because our sample size was so large, these differences did not affect our findings.", "P4.s6cfb": "The first sentence is good: it reports who was over- and underrepresented. The second undoes it. Sample size cannot change who took part, so the authors cannot claim the differences had no effect.", "P4.levelUp": "<strong>Level 3 reached.</strong> A reader can now assess selection bias, see how it was prevented or mitigated, and find it clearly discussed, including what the study could not fix.", "P5.h": "From incomplete to complete", "P5.lede": "Here is the manuscript where you started and where you finished. Every revision you chose is drawn from the published paper (<a class=\"cite\" href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa2311330\" target=\"_blank\" rel=\"noopener\">Hampshire et al., 2024</a>).", "P5.colStart": "Where you started", "P5.colEnd": "Where you finished", "P5.band": "Selection-bias reporting lives in three places.", "P5.tMethods": "<strong>Methods:</strong> who was sampled and invited, and how the authors checked for and addressed bias.", "P5.tResults": "<strong>Results:</strong> how many people were lost at each stage, and how the participants compare with those who were invited.", "P5.tDiscussion": "<strong>Discussion:</strong> what the design prevented, what it could not, and what that means for the findings.", "CG.band": "Congratulations, you’ve completed the activity!", "CG.p1": "You took a manuscript that no reader could assess and rebuilt the reporting that lets them judge its selection bias.", "CG.p2": "Selection bias is rarely reported in a single sentence. It lives in who you sampled, who you lost along the way, how they compare, and what you say about it.", "CG.p3": "The next time you read a paper, or write one, look for all three: complete reporting, mitigation, and discussion.", "CG.prev": "Previous", "CG.restart": "Restart", "CG.home": "Activities Menu"};
+  var T = {"SH.title": "Reporting Selection Bias", "SH.back": "Back", "SH.next": "Next", "SH.ilabel": "Instructions", "SH.studySum": "Details on the study", "SH.studyBody": "<strong>Cognition and Memory after Covid-19 in a Large Community Sample</strong> (<a class=\"cite\" href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa2311330\" target=\"_blank\" rel=\"noopener\">Hampshire et al., 2024</a>, <em>New England Journal of Medicine</em>). The researchers asked whether adults who had Covid-19 show objectively measurable cognitive deficits, and how long any deficits last. Adults from REACT, a large community study in England, were invited to complete an online survey and eight cognitive tasks. Scores were compared across groups defined by illness duration, variant period, and hospitalization.", "SH.levelsSum": "The three reporting levels", "SH.lv1name": "Incomplete", "SH.lv1def": "A reader cannot assess selection bias. A study reported like this should not have been published.", "SH.lv2name": "Complete", "SH.lv2def": "The Methods and Results are complete, so a reader can assess selection bias, and it is likely present. But it was not prevented, mitigated, or discussed.", "SH.lv3name": "Complete, mitigated, and discussed", "SH.lv3def": "A reader can assess selection bias, can see how the researchers prevented or mitigated it, and can find it clearly discussed.", "SH.pmDef": "<strong>Prevented or mitigated</strong> means the researchers stopped selection bias from happening during the study design phase, or fixed or adjusted for it during the data analysis phase.", "SH.levelLabel": "Reporting level {n} of 3: {name}", "SH.docName": "Manuscript_draft.docx", "SH.docMeta": "Shared with you · Track changes on", "SH.msLabel": "Adapted from Hampshire et al. (2024)", "SH.legendDel": "Deleted", "SH.legendIns": "Inserted", "SH.editing": "Editing", "SH.secMethods": "Methods", "SH.secResults": "Results", "SH.secDiscussion": "Discussion", "SH.subPop": "Study Population and Design", "SH.subCog": "Cognitive Assessment", "SH.subStats": "Statistical Analysis", "SH.subResp": "Responses to Questionnaire and Cognitive Test", "SH.subPrimary": "Primary Analyses", "SH.subLimits": "Limitations", "SH.notReported": "Nothing reported here.", "SH.editStep": "Edit {n} of 3", "SH.worksWell": "Works well:", "SH.tradeOff": "Trade-off:", "SH.gOkay": "Okay", "SH.gGood": "Good", "SH.gBest": "Best", "MS.fixCog": "Participants undertook eight computerized online tasks from the Cognitron battery in a fixed order on their personal devices. We used factor analysis to obtain a global cognitive score across the eight tasks.", "MS.fixPrimary": "Participants with unresolved persistent symptoms had larger deficits in global cognition than those in the no–Covid-19 group (−0.42 SD; 95% CI, −0.53 to −0.31).", "MS.fixDisc": "In this large community-based study, we found that Covid-19 was associated with longer-term objectively measurable cognitive deficits.", "P1.band": "Let’s rebuild a manuscript so that readers can judge its selection bias.", "P1.lead": "You’ll work from a real published study of memory and thinking after Covid-19. We’ve removed the parts that report on selection bias. Your job is to put them back.", "P1.goalH": "Your Goal", "P1.goal": "Your goal is to <strong>revise the manuscript until a reader can assess selection bias, see how it was prevented or mitigated, and find it clearly discussed</strong>. Along the way, notice where in a paper each piece of that reporting belongs.", "P1.stepsH": "What You’re About To Do", "P1.step1": "Read the incomplete draft and identify what a reader would need.", "P1.step2": "Make the Methods and Results complete.", "P1.step3": "Add how the bias was mitigated, and discuss it.", "P1.step4": "Compare your choices with C4R’s choices.", "P2.h": "Read the incomplete draft", "P2.instr": "Below is an adapted draft of the manuscript with its selection-bias reporting removed. Read it, then identify what a reader would need in order to judge whether selection bias is present.", "P2.draftS1": "We recruited adults in England who had taken part in a national Covid-19 surveillance study to complete an online assessment of cognitive function.", "P2.draftS4": "We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions.", "P2.draftS2": "A total of 112,964 participants completed the cognitive assessment.", "P2.q": "This draft would not let a reader judge selection bias. What is missing? Select all that apply.", "P2.m1": "How participants were sampled, and who was invited", "P2.m1fb": "The draft says participants came from “a national surveillance study” but not how they were selected or how many were invited. Without that, there is no starting population to compare against.", "P2.m2": "Which cognitive tasks were in the assessment", "P2.m2fb": "Already reported: the draft names the eight Cognitron tasks. Which tasks were used is about measurement, not about who ended up in the sample.", "P2.m3": "How many people were invited, responded, and completed the assessment", "P2.m3fb": "The draft gives only the final 112,964. A reader cannot tell how many people were lost, or at which stage.", "P2.m4": "Which statistical software was used", "P2.m4fb": "Software matters for reproducibility, but it tells the reader nothing about who was or was not included.", "P2.m5": "How the people who took part compare with the people who were invited", "P2.m5fb": "Even with all the numbers, a reader needs to know whether the people who took part differ from those who did not. That comparison is what shows whether selection bias is likely present.", "P2.m6": "Which characteristics the scores were adjusted for", "P2.m6fb": "Already reported: the draft lists the adjustment characteristics. Adjustment deals with differences within the sample, not with who is in it.", "P2.good": "<strong>That’s it.</strong> A reader needs all three of these to assess selection bias. Right now the draft sits at Level 1: incomplete, cannot assess.", "P2.bad": "<strong>You’ve found all three.</strong> Uncheck the incorrect choices to continue.", "P3.h": "Round 1: Make the report complete", "P3.instr": "Revise three passages in the Methods and Results. Every option improves the draft. Select one to see what it does well and what it trades away, then keep the revision you would write. Your choice is written into the shared manuscript with track changes, and you can switch until you move on.", "P3.s1q": "How would you report who was sampled and invited?", "P3.s1a": "We recruited adults in England who had previously taken part in REACT, a national Covid-19 surveillance study. Those who had agreed to be recontacted were invited by e-mail to complete a follow-up survey and an online cognitive assessment between August and December 2022.", "P3.s1aw": "Names the parent study, the route of invitation, and the time window, so the reader knows where participants came from and that they were invited rather than self-recruited.", "P3.s1at": "No numbers. The reader cannot tell how large the parent study was, how many people were invited, or how the invited group was chosen, so there is no starting population to compare the participants against.", "P3.s1b": "We drew our cohort from a randomly selected community sample of 3,099,386 adults (≥18 years of age) in England, of whom 2,494,309 (80.5%) consented to be recontacted. Between August 1 and December 30, 2022, we invited a subsample of 800,000 adults to complete a follow-up survey and cognitive assessment. The subsample comprised participants who reported persistent symptoms after a positive or suspected infection, participants with a positive PCR or antibody test, and participants randomly selected from the remaining study population.", "P3.s1bw": "Gives the sampling frame (a random community sample), the size of each layer, and which groups made up the 800,000 invited. That is the starting population every later comparison depends on. It also shows that the design deliberately oversampled people who had Covid-19, so the reader knows the invited group was never meant to mirror the general population.", "P3.s1bt": "It is the longest option, and the three-part subsample takes a careful read. A reader who skims may miss that only one of the three groups was randomly selected.", "P3.s1c": "We drew our cohort from REACT, a randomly selected community sample of adults in England who had consented to be recontacted. Between August 1 and December 30, 2022, we invited a subsample of 800,000 of these adults to complete a follow-up survey and an online cognitive assessment.", "P3.s1cw": "States that the parent sample was random and gives the number invited, so the reader has a denominator for the participant flow.", "P3.s1ct": "It does not say how the 800,000 were chosen. The published design oversampled people with persistent symptoms and positive tests, and without that detail a reader may assume the invited group was a simple random sample of the community.", "P3.s2q": "How would you report where participants were lost?", "P3.s2a": "Among the 800,000 adults invited, 276,840 (34.6%) completed the questionnaire. Of these respondents, 141,583 (51.1%) started the cognitive battery (completed at least one task), and 112,964 (79.8%) completed all eight tasks.", "P3.s2aw": "Each stage has a count and a percentage: invited, completed the questionnaire, started the battery, completed it. The reader can see that about 14% of invited adults finished, and where the rest dropped out. Each of those losses is a point where selection bias can enter.", "P3.s2at": "Each percentage is relative to the previous stage, not to the number invited, so the reader has to do the arithmetic to see the overall completion rate. A flow diagram would make the same information easier to take in.", "P3.s2b": "Of the 800,000 adults invited, 112,964 (14.1%) completed all eight cognitive tasks and were included in the primary analyses.", "P3.s2bw": "Gives the denominator and the final count with its percentage, so the reader learns at once that most invited adults did not take part.", "P3.s2bt": "One number collapses three stages. The reader cannot tell whether people ignored the invitation, answered the questionnaire but never opened the cognitive tasks, or started the tasks and stopped. Those are different kinds of selection, and they may involve different people.", "P3.s2c": "Among the 800,000 adults invited, 276,840 (34.6%) completed the questionnaire, and 112,964 completed all eight cognitive tasks.", "P3.s2cw": "Separates response to the invitation from completion of the cognitive assessment, the two largest losses, and gives counts for both.", "P3.s2ct": "It skips the middle stage. The reader cannot see how many respondents started the cognitive battery and stopped partway, which is the loss most likely to depend on cognitive ability itself.", "P3.s3q": "How would you show whether the participants differ from those invited?", "P3.s3a": "Baseline characteristics of participants who completed the cognitive assessment are summarized in Table 1. A comparison with all 800,000 invited adults, by age, sex, race and ethnic group, education level, and index of multiple deprivation, is provided in Table S2 of the Supplementary Appendix.", "P3.s3aw": "The comparison exists and the reader is told where to find it, which is more than many papers offer.", "P3.s3at": "The main text does not state the direction of a single difference. A reader who does not open the supplement learns nothing about whether selection bias is likely, and one who does has to work out the pattern alone.", "P3.s3b": "As compared with the 800,000 invited participants, those who participated in the cognitive assessment were slightly more likely to be women, more likely to be White, and slightly less likely to be from the youngest age groups or from areas with greater levels of multiple deprivation.", "P3.s3bw": "Compares participants with everyone who was invited and states the direction of each demographic difference, so the reader can see that selection bias is likely present.", "P3.s3bt": "It stops at demographics. The published comparison also found that people who reported poor memory or brain fog were more likely to take part, a difference tied directly to the outcome, and that is the one most likely to shift the findings.", "P3.s3c": "As compared with the 800,000 invited participants, those who participated in the cognitive assessment were slightly more likely to be women, more likely to be White, and slightly less likely to be from the youngest age groups or from areas with greater levels of multiple deprivation. Participants who reported poor memory or brain fog were slightly more likely to participate than those without these symptoms, across all study groups, including the no–Covid-19 group.", "P3.s3cw": "Compares participants with everyone invited, states the direction of each difference, and includes the one that matters most: people with memory complaints were more likely to take part, in every study group. The reader can now see that selection bias is likely present and can reason about which way it pushes the results.", "P3.s3ct": "Reporting the symptom-related difference invites the reader to ask what the authors did about it. The Methods and Discussion now have to answer that, which is the work of the next round.", "P3.levelUp": "<strong>Level 2 reached.</strong> The Methods and Results now report how participants were sampled, where they were lost, and how they compare with those invited, so a reader can assess selection bias. Nothing in the manuscript addresses or discusses it yet.", "P4.h": "Round 2: Show how bias was mitigated and discussed", "P4.instr": "Your manuscript is now complete, and it shows that selection bias is likely present. Revise three more passages to report how the authors checked for and addressed bias, and to discuss it. As before, every option is an improvement. Keep the one you would write.", "P4.s4q": "How would you report how bias was checked for and addressed?", "P4.s4a": "We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions. Analyses were restricted to participants who completed all eight tasks.", "P4.s4aw": "States the adjustment and the analysis population explicitly, so the reader knows which people the estimates describe.", "P4.s4at": "Nothing here checks whether completers differ from the people who were invited but did not complete. Adjustment deals with differences within the sample, not with who is in it, so the reader still cannot tell whether selection bias was assessed at all.", "P4.s4b": "To assess nonresponse bias, we compared the characteristics of participants who had accessed and completed the cognitive assessment with those who had not. We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions. We used propensity-score matching to further account for potential confounding.", "P4.s4bw": "The nonresponse comparison is the selection-bias step: it checks whether the people who completed the assessment differ from those who did not, and it sits in the Methods where a reader looks for it. The adjustment and matching steps are named alongside it, so the Methods are a full record of the analysis.", "P4.s4bt": "The last sentence mixes in a method for a different problem. Propensity-score matching balances the groups being compared (people who had Covid-19 and people who did not) on measured characteristics, which addresses confounding. It cannot bring back people who never took part, so on its own it does not correct selection bias. Good reporting names each method and the problem it addresses, and this sentence leaves the reader to work that out.", "P4.s4c": "To assess nonresponse bias, we compared the characteristics of participants who had accessed and completed the cognitive assessment with those who had not. We used linear regression to adjust the task-performance scores for age, sex, race and ethnic group, education level, index of multiple deprivation, and preexisting health conditions.", "P4.s4cw": "Reports the nonresponse check clearly and keeps it separate from the adjustment, so the reader is not tempted to think the regression handles selection.", "P4.s4ct": "It leaves out the propensity-score matching the authors also ran, so the Methods are an incomplete record of the analysis. The reader also learns that completers and non-completers were compared, but not what followed from that comparison.", "P4.s5q": "How would you discuss how the sampling design shaped who was included?", "P4.s5a": "Our findings differ from those of some clinic-based studies of people with long Covid, which enrolled patients with more severe illness than the community sample described here.", "P4.s5aw": "Acknowledges that the results differ from other studies and attributes the difference to who was recruited, which is the right explanation.", "P4.s5at": "It is framed around other people’s studies. The reader is not told what this study’s own sampling captured or missed, so the sentence explains a disagreement without describing the design that produced it.", "P4.s5b": "Participants in our study were recruited by means of community-based random sampling, which resulted in the inclusion of persons with more asymptomatic and milder cases than would occur in hospital- or clinic-based studies.", "P4.s5bw": "Explains what the design prevented: the skew toward severe cases that affects clinic samples. The reader can see why these findings may generalize better than clinic-based ones.", "P4.s5bt": "It names the gain but not the gap. Random sampling of a community still could not reach the most severe cases, including people who had died, and this sentence leaves that out.", "P4.s5c": "Participants in our study were recruited by means of community-based random sampling, which resulted in the inclusion of persons with more asymptomatic and milder cases than would occur in hospital- or clinic-based studies but which also excluded persons with the most severe cases (e.g., those who died).", "P4.s5cw": "Names both the gain and the gap. The design prevented the skew toward severe cases that affects clinic samples, and the sentence is honest that it still excluded the most severe cases, including people who died. That is what discussing selection bias looks like.", "P4.s5ct": "It stops short of saying what the gap does to the findings. Excluding the most severe cases would tend to understate the deficits, and the reader is left to draw that conclusion.", "P4.s6q": "How would you discuss selection bias as a limitation?", "P4.s6a": "Any study that requires active participant engagement has a degree of participant self-selection bias. With regard to our study, persons with the most severe impairment may not have been able or willing to undertake a cognitive assessment. In addition, certain groups, including women and White persons, were slightly overrepresented in our study sample as compared with the base population, whereas younger persons and those from areas with greater levels of multiple deprivation were underrepresented. However, the sample size in our study meant that all sectors of society were represented and contributed meaningful data to the findings.", "P4.s6aw": "Names the bias and its mechanism (any study that needs active participation self-selects), says who is likely missing (people with the most severe impairment), and reports who was over- and underrepresented, linking back to the comparison in the Results.", "P4.s6at": "Read the last sentence critically. A large sample means every group contributed enough data to analyze, but it does not remove selection bias. If the people who took part differ from those who did not, more participants give a more precise estimate of a still-biased result. The sentence risks reassuring the reader more than the evidence allows.", "P4.s6b": "Persons with the most severe impairment may not have been able or willing to undertake a cognitive assessment. In addition, certain groups, including women and White persons, were slightly overrepresented in our study sample as compared with the base population, whereas younger persons and those from areas with greater levels of multiple deprivation were underrepresented.", "P4.s6bw": "Says who is likely missing and how the sample differs from the base population, consistent with the Results, without overclaiming.", "P4.s6bt": "It does not name the mechanism or say which way the missing people would push the findings. A reader has to infer that losing the most impaired participants would make the deficits look smaller than they are.", "P4.s6c": "This study has certain limitations. As with any study that relies on voluntary participation, selection bias is possible, and our sample may not fully represent the base population.", "P4.s6cw": "Acknowledges that selection bias is possible and names its source, voluntary participation. Many papers do not get this far.", "P4.s6ct": "It is generic. The reader is not told who is missing, how the sample differs, or what that means for the findings, so there is nothing to weigh against the results.", "P4.levelUp": "<strong>Level 3 reached.</strong> A reader can now assess selection bias, see how it was checked for or mitigated, and find it discussed. Next, compare your choices with C4R’s.", "P5.h": "Your choices and C4R’s", "P5.lede": "Here are the revisions you chose, next to the ones C4R would choose. Every C4R choice is the text the authors published (<a class=\"cite\" href=\"https://www.nejm.org/doi/full/10.1056/NEJMoa2311330\" target=\"_blank\" rel=\"noopener\">Hampshire et al., 2024</a>). Where yours differs, a note says what the published version adds.", "P5.colYou": "Your choices", "P5.colC4R": "C4R choices", "P5.yourTag": "Your choice · {g}", "P5.c4rTag": "C4R choice · Best", "P5.same": "Same as your choice.", "P5.why": "Why C4R chose it:", "P5.band": "Selection-bias reporting lives in three places.", "P5.tMethods": "<strong>Methods:</strong> who was sampled and invited, and how the authors checked for and addressed bias.", "P5.tResults": "<strong>Results:</strong> how many people were lost at each stage, and how the participants compare with those who were invited.", "P5.tDiscussion": "<strong>Discussion:</strong> what the design prevented, what it could not, and what that means for the findings.", "CG.band": "Congratulations, you’ve completed the activity!", "CG.p1": "You took a manuscript that no reader could assess and rebuilt the reporting that lets them judge its selection bias.", "CG.p2": "Selection bias is rarely reported in a single sentence. It lives in who you sampled, who you lost along the way, how they compare, and what you say about it.", "CG.p3": "The next time you read a paper, or write one, look for all three: complete reporting, mitigation, and discussion.", "CG.prev": "Previous", "CG.restart": "Restart", "CG.home": "Activities Menu"};
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
 
   /* ---------------- the manuscript ----------------
-     Each slot has a draft (null = not reported) and the published text.
-     Fixed blocks never change. */
+     Each slot has a draft (null = not reported). Fixed blocks never change. */
   var SLOTS = {
     s1: { draft: T["P2.draftS1"], crumb: T["SH.secMethods"] + " · " + T["SH.subPop"] },
     s2: { draft: T["P2.draftS2"], crumb: T["SH.secResults"] + " · " + T["SH.subResp"] },
@@ -418,17 +440,27 @@
       { sub: T["SH.subLimits"], slot: "s6" } ] }
   ];
 
-  /* Two rounds of three edits. ans = index of the correct option. */
+  /* Two rounds of three edits. Every option is an improvement, graded okay / good / best.
+     The best option is the published text and becomes the C4R choice. */
   var ROUNDS = [
-    { p: "P3", edits: [ { slot: "s1", ans: 1 }, { slot: "s2", ans: 0 }, { slot: "s3", ans: 2 } ] },
-    { p: "P4", edits: [ { slot: "s4", ans: 1 }, { slot: "s5", ans: 2 }, { slot: "s6", ans: 0 } ] }
+    { p: "P3", edits: [ { slot: "s1", grades: ["okay", "best", "good"] },
+                        { slot: "s2", grades: ["best", "okay", "good"] },
+                        { slot: "s3", grades: ["okay", "good", "best"] } ] },
+    { p: "P4", edits: [ { slot: "s4", grades: ["okay", "best", "good"] },
+                        { slot: "s5", grades: ["okay", "good", "best"] },
+                        { slot: "s6", grades: ["best", "good", "okay"] } ] }
   ];
   var LETTERS = ["a", "b", "c"];
+  var GRADE_NAME = { okay: T["SH.gOkay"], good: T["SH.gGood"], best: T["SH.gBest"] };
   ROUNDS.forEach(function (r) {
     r.edits.forEach(function (e) {
       e.q = T[r.p + "." + e.slot + "q"];
-      e.opts = LETTERS.map(function (L) { return { text: T[r.p + "." + e.slot + L], fb: T[r.p + "." + e.slot + L + "fb"] }; });
-      SLOTS[e.slot].final = e.opts[e.ans].text;
+      e.opts = LETTERS.map(function (L, i) {
+        return { text: T[r.p + "." + e.slot + L], w: T[r.p + "." + e.slot + L + "w"],
+                 t: T[r.p + "." + e.slot + L + "t"], grade: e.grades[i] };
+      });
+      e.best = e.grades.indexOf("best");
+      SLOTS[e.slot].edit = e;
     });
   });
 
@@ -437,44 +469,77 @@
 
   /* ---------------- state ---------------- */
   var idx = 0, PAGES = 6;
-  var fixed = {};          // slot -> true once revised
-  var wrong = {};          // "slot:i" -> true for wrong picks shown
+  var sel = {};            // slot -> chosen option index
   var cur = [0, 0];        // current edit within each round
   var draftOk = false;
 
+  function chosen(s) { return sel[s] !== undefined; }
+  function roundDone(ri) { return ROUNDS[ri].edits.every(function (e) { return chosen(e.slot); }); }
   function level() {
-    if (fixed.s4 && fixed.s5 && fixed.s6) return 3;
-    if (fixed.s1 && fixed.s2 && fixed.s3) return 2;
+    if (roundDone(1)) return 3;
+    if (roundDone(0)) return 2;
     return 1;
   }
-  function slotText(s, useFinal) {
-    if (useFinal) return SLOTS[s].final;
-    return SLOTS[s].draft;
-  }
+  function focusSlot(ri) { return ROUNDS[ri].edits[cur[ri]].slot; }
 
-  /* render the manuscript. mode: "draft" (level-1 text, missing slots hidden), "live" (current state) */
-  function renderMs(mode) {
-    var h = '<span class="mslabel">' + T["SH.msLabel"] + "</span>";
+  /* The shared manuscript. mode "draft": level-1 text, missing slots hidden.
+     mode "live": draft text with the learner's choices shown as tracked changes;
+     focus = slot currently being edited. */
+  function docIcon() {
+    return '<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 2h8l5 5v15H6z" fill="#2b5797"/>' +
+      '<path d="M14 2v5h5" fill="#9cb7e8"/><path d="M8.5 11h7M8.5 14h7M8.5 17h5" stroke="#fff" stroke-width="1.3" stroke-linecap="round"/></svg>';
+  }
+  function renderDoc(mode, focus) {
+    var body = "";
     MS.forEach(function (sec) {
-      var body = "";
+      var inner = "";
       sec.parts.forEach(function (p) {
-        var txt, cls = "";
-        if (p.fixed) txt = p.fixed;
+        var html, cls = [];
+        if (p.fixed) html = p.fixed;
         else {
-          var done = mode === "live" && fixed[p.slot];
-          txt = slotText(p.slot, done);
-          if (done) cls = ' class="new"';
-          if (txt === null) {
-            if (mode === "draft") return;
-            txt = null;
+          var draft = SLOTS[p.slot].draft;
+          if (mode === "draft") {
+            if (draft === null) return;
+            html = draft;
+          } else {
+            if (p.slot === focus) cls.push("focus");
+            if (chosen(p.slot)) {
+              cls.push("chg");
+              var txt = SLOTS[p.slot].edit.opts[sel[p.slot]].text;
+              html = (draft === null ? "" : "<del>" + draft + "</del> ") + "<ins>" + txt + "</ins>";
+            } else {
+              html = draft === null ? '<span class="missing">' + T["SH.notReported"] + "</span>" : draft;
+            }
+            if (p.slot === focus) html = '<span class="etag">' + T["SH.editing"] + "</span>" + html;
           }
         }
-        if (p.sub) body += "<h5>" + p.sub + "</h5>";
-        body += txt === null ? '<p class="missing">' + T["SH.notReported"] + "</p>" : "<p" + cls + ">" + txt + "</p>";
+        if (p.sub) inner += "<h5>" + p.sub + "</h5>";
+        inner += "<p" + (cls.length ? ' class="' + cls.join(" ") + '"' : "") +
+          (p.slot ? ' data-slot="' + p.slot + '"' : "") + ">" + html + "</p>";
       });
-      h += "<section><h4>" + sec.h + "</h4>" + body + "</section>";
+      body += "<section><h4>" + sec.h + "</h4>" + inner + "</section>";
     });
-    return h;
+    return '<div class="doc"><div class="doc-bar">' + docIcon() + '<span class="dname">' + T["SH.docName"] +
+      '</span><span class="dmeta">' + T["SH.docMeta"] + "</span></div>" +
+      '<div class="doc-legend"><span class="sub">' + T["SH.msLabel"] + "</span>" +
+      (mode === "live" ? "<del>" + T["SH.legendDel"] + "</del><ins>" + T["SH.legendIns"] + "</ins>" : "") +
+      '</div><div class="doc-body">' + body + "</div></div>";
+  }
+  function renderDocs() {
+    $('[data-doc="draft"]').innerHTML = renderDoc("draft");
+    [0, 1].forEach(function (ri) {
+      var host = $('[data-doc="round' + ri + '"]');
+      var sc = $(".doc-body", host), top = sc ? sc.scrollTop : 0;
+      host.innerHTML = renderDoc("live", focusSlot(ri));
+      $(".doc-body", host).scrollTop = top;
+    });
+  }
+  /* scroll the passage being edited into view inside the doc panel (not the window) */
+  function revealFocus(ri) {
+    var host = $('[data-doc="round' + ri + '"]');
+    var sc = $(".doc-body", host), f = $("p.focus", host);
+    if (!sc || !f) return;
+    sc.scrollTop = Math.max(0, f.offsetTop - sc.clientHeight / 2 + f.offsetHeight / 2);
   }
 
   function renderLevels() {
@@ -493,12 +558,10 @@
     var h = '<div class="tlabel">' + label + '</div><div class="segs">' +
       [1, 2, 3].map(function (i) { return '<span class="seg' + (i <= n ? " on" : "") + '"></span>'; }).join("") + "</div>";
     $$("[data-tracker]").forEach(function (el) { el.innerHTML = h; });
-    $$('[data-frag="ms"]').forEach(function (el) { el.innerHTML = '<div class="ms">' + renderMs("live") + "</div>"; });
   }
 
   /* ---------------- page 2: what is missing ---------------- */
   function renderChecks() {
-    $("#draftMs").innerHTML = renderMs("draft");
     $("#checks").innerHTML = CHECKS.map(function (k) {
       return '<div class="check" data-k="' + k + '"><label><input type="checkbox" id="chk-' + k + '"><span>' +
         T["P2." + k] + '</span></label><div class="cfb" hidden></div></div>';
@@ -530,61 +593,53 @@
     updatePager();
   }
 
-  /* ---------------- pages 3-4: revisions ---------------- */
+  /* ---------------- pages 3-4: revisions ----------------
+     Each edit is a radio group. Selecting an option shows what it does well and what it
+     trades away, writes it into the manuscript as a tracked change, and can be changed. */
   function renderRound(ri) {
     var r = ROUNDS[ri];
     var host = $('.round[data-round="' + ri + '"]');
     var h = '<div class="stepline"><span class="steplabel"></span><span class="dotrow">' +
       r.edits.map(function () { return '<span class="dot"></span>'; }).join("") + "</span></div>";
     r.edits.forEach(function (e, ei) {
-      var done = !!fixed[e.slot];
-      var shown = done ? SLOTS[e.slot].final : SLOTS[e.slot].draft;
       h += '<div class="edit" data-ei="' + ei + '">' +
         '<span class="crumb">' + SLOTS[e.slot].crumb + "</span>" +
-        '<div class="passage' + (done ? " done" : "") + '"><span class="ptag">' + (done ? T["SH.revised"] : T["SH.curDraft"]) + "</span>" +
-        (shown === null ? '<p class="missing">' + T["SH.notReported"] + "</p>" : "<p>" + shown + "</p>") + "</div>" +
-        '<p class="prompt">' + e.q + '</p><div class="opts">';
+        '<p class="prompt">' + e.q + '</p><div class="opts" role="radiogroup" aria-label="' + e.q.replace(/"/g, "&quot;") + '">';
       e.opts.forEach(function (o, oi) {
-        var cls = "opt";
-        if (done && oi === e.ans) cls += " picked-good";
-        else if (wrong[e.slot + ":" + oi]) cls += " picked-bad";
-        var dis = done || wrong[e.slot + ":" + oi] ? " disabled" : "";
-        h += '<button type="button" class="' + cls + '" id="opt-' + e.slot + "-" + oi + '" data-oi="' + oi + '"' + dis +
-          '><span class="ol">' + LETTERS[oi].toUpperCase() + "</span><span>" + o.text + "</span></button>";
+        var on = sel[e.slot] === oi;
+        h += '<label class="opt' + (on ? " sel" : "") + '" id="opt-' + e.slot + "-" + oi + '" data-oi="' + oi + '">' +
+          '<span class="orow"><input type="radio" name="r-' + e.slot + '" value="' + oi + '"' + (on ? " checked" : "") + ">" +
+          "<span>" + o.text + "</span></span>" +
+          '<div class="why"><p><strong>' + T["SH.worksWell"] + "</strong> " + o.w + "</p>" +
+          "<p><strong>" + T["SH.tradeOff"] + "</strong> " + o.t + "</p></div></label>";
       });
       h += '</div><div class="efb"></div></div>';
     });
     host.innerHTML = h;
     r.edits.forEach(function (e, ei) {
       var ed = $('.edit[data-ei="' + ei + '"]', host);
-      if (fixed[e.slot]) showEditFb(ri, ei, e.ans);
-      $$(".opt", ed).forEach(function (b) {
-        b.addEventListener("click", function () { pick(ri, ei, +b.getAttribute("data-oi")); });
+      $$("input", ed).forEach(function (inp) {
+        inp.addEventListener("change", function () { pick(ri, ei, +inp.value); });
       });
+      refreshEdit(ri, ei);
     });
     showEdit(ri);
   }
-  function showEditFb(ri, ei, oi) {
+  function refreshEdit(ri, ei) {
     var r = ROUNDS[ri], e = r.edits[ei];
     var ed = $('.round[data-round="' + ri + '"] .edit[data-ei="' + ei + '"]');
-    var good = oi === e.ans;
-    var h = '<div class="fb ' + (good ? "good" : "bad") + '">' + e.opts[oi].fb +
-      (good ? "" : " " + T["SH.tryAgain"]) + "</div>";
-    if (good && ei === r.edits.length - 1) h += '<div class="fb level">' + T[r.p + ".levelUp"] + "</div>";
-    $(".efb", ed).innerHTML = h;
+    $$(".opt", ed).forEach(function (o, oi) { o.classList.toggle("sel", sel[e.slot] === oi); });
+    var last = ei === r.edits.length - 1;
+    $(".efb", ed).innerHTML = last && roundDone(ri) ? '<div class="fb level">' + T[r.p + ".levelUp"] + "</div>" : "";
   }
   function pick(ri, ei, oi) {
     var e = ROUNDS[ri].edits[ei];
-    if (fixed[e.slot]) return;
-    if (oi === e.ans) {
-      fixed[e.slot] = true;
-      renderRound(ri);
-      renderTrackers();
-    } else {
-      wrong[e.slot + ":" + oi] = true;
-      renderRound(ri);
-      showEditFb(ri, ei, oi);
-    }
+    sel[e.slot] = oi;
+    refreshEdit(ri, ei);
+    showEdit(ri);
+    renderTrackers();
+    renderDocs();
+    renderCompare();
     updatePager();
   }
   function showEdit(ri) {
@@ -593,35 +648,41 @@
     $$(".edit", host).forEach(function (ed, i) { ed.classList.toggle("current", i === c); });
     $(".steplabel", host).textContent = T["SH.editStep"].replace("{n}", c + 1);
     $$(".dot", host).forEach(function (d, i) {
-      d.className = "dot" + (fixed[r.edits[i].slot] ? " done" : i === c ? " now" : "");
+      d.className = "dot" + (chosen(r.edits[i].slot) ? " done" : i === c ? " now" : "");
     });
   }
 
-  /* ---------------- page 5: compare ---------------- */
+  /* ---------------- page 5: your choices vs C4R choices ---------------- */
   function renderCompare() {
     var h = "";
-    MS.forEach(function (sec) {
+    ROUNDS.forEach(function (r) {
       var rows = "";
-      sec.parts.forEach(function (p) {
-        if (!p.slot) return;
-        var a = SLOTS[p.slot].draft;
+      r.edits.forEach(function (e) {
+        var mine = chosen(e.slot) ? sel[e.slot] : null;
+        var best = e.opts[e.best];
+        var match = mine === e.best;
+        var mineTag = mine === null ? "" : T["P5.yourTag"].replace("{g}", GRADE_NAME[e.opts[mine].grade]);
         rows += '<div class="cmp-row">' +
-          '<div class="cmp-cell start"><span class="crumb colname">' + T["P5.colStart"] + "</span>" +
-          '<span class="crumb">' + SLOTS[p.slot].crumb + "</span>" +
-          (a === null ? '<span class="missing">' + T["SH.notReported"] + "</span>" : a) + "</div>" +
-          '<div class="cmp-cell end"><span class="crumb colname">' + T["P5.colEnd"] + "</span>" +
-          '<span class="crumb">' + SLOTS[p.slot].crumb + "</span>" + SLOTS[p.slot].final + "</div></div>";
+          '<div class="cmp-cell you' + (match ? " match" : "") + '"><span class="crumb colname">' + T["P5.colYou"] + "</span>" +
+          '<span class="crumb">' + SLOTS[e.slot].crumb + "</span>" +
+          (mine === null ? '<span class="missing">' + T["SH.notReported"] + "</span>" :
+            '<span class="tag">' + mineTag + "</span><div>" + e.opts[mine].text + "</div>") + "</div>" +
+          '<div class="cmp-cell c4r"><span class="crumb colname">' + T["P5.colC4R"] + "</span>" +
+          '<span class="crumb">' + SLOTS[e.slot].crumb + "</span>" +
+          '<span class="tag">' + T["P5.c4rTag"] + "</span>" +
+          (match ? "<div>" + T["P5.same"] + "</div>" :
+            "<div>" + best.text + '</div><div class="why"><strong>' + T["P5.why"] + "</strong> " + best.w + "</div>") +
+          "</div></div>";
       });
-      h += '<div class="cmp-sec"><h4>' + sec.h + "</h4>" + rows + "</div>";
+      h += '<div class="cmp-sec"><h4>' + T[r.p + ".h"] + "</h4>" + rows + "</div>";
     });
     $("#cmp").innerHTML = h;
   }
 
   /* ---------------- navigation ---------------- */
-  function roundDone(ri) { return ROUNDS[ri].edits.every(function (e) { return fixed[e.slot]; }); }
   function canAdvance(i) {
     if (i === 1) return draftOk;
-    if (i === 2 || i === 3) return !!fixed[ROUNDS[i - 2].edits[cur[i - 2]].slot];
+    if (i === 2 || i === 3) return chosen(focusSlot(i - 2));
     return true;
   }
   function updatePager() {
@@ -632,29 +693,27 @@
   function go(n) {
     idx = Math.max(0, Math.min(PAGES - 1, n));
     $$(".page").forEach(function (p, i) { p.classList.toggle("active", i === idx); });
+    $(".wrap").classList.toggle("wide", idx === 2 || idx === 3);
+    updatePager();
+    window.scrollTo(0, 0);
+    if (idx === 2 || idx === 3) { renderDocs(); revealFocus(idx - 2); }
+  }
+  function stepTo(ri, c) {
+    cur[ri] = c;
+    showEdit(ri);
+    renderDocs();
+    revealFocus(ri);
     updatePager();
     window.scrollTo(0, 0);
   }
   function forward() {
     if (!canAdvance(idx)) return;
     // on a revision page, Next walks the three edits before it leaves the page
-    if ((idx === 2 || idx === 3) && cur[idx - 2] < 2) {
-      cur[idx - 2]++;
-      showEdit(idx - 2);
-      updatePager();
-      window.scrollTo(0, 0);
-      return;
-    }
+    if ((idx === 2 || idx === 3) && cur[idx - 2] < 2) { stepTo(idx - 2, cur[idx - 2] + 1); return; }
     go(idx + 1);
   }
   function back() {
-    if ((idx === 2 || idx === 3) && cur[idx - 2] > 0) {
-      cur[idx - 2]--;
-      showEdit(idx - 2);
-      updatePager();
-      window.scrollTo(0, 0);
-      return;
-    }
+    if ((idx === 2 || idx === 3) && cur[idx - 2] > 0) { stepTo(idx - 2, cur[idx - 2] - 1); return; }
     go(idx - 1);
   }
   $("#nextBtn").addEventListener("click", forward);
@@ -662,7 +721,7 @@
   $("#congratsPrev").addEventListener("click", function () { go(idx - 1); });
   $("#congratsHome").addEventListener("click", function () { go(0); });
   $("#congratsRestart").addEventListener("click", function () {
-    fixed = {}; wrong = {}; cur = [0, 0]; draftOk = false;
+    sel = {}; cur = [0, 0]; draftOk = false;
     init();
     go(0);
   });
@@ -673,6 +732,7 @@
     renderRound(0);
     renderRound(1);
     renderTrackers();
+    renderDocs();
     renderCompare();
     updatePager();
   }
